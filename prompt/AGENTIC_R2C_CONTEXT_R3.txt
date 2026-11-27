@@ -1,8 +1,24 @@
-One correction before I approve the intake gate.
+/story-plan ASKTD-77
 
-The numbers 0008 to 0013 are taken: the head branch of the open Registry pull request (number 23) adds decision records with these numbers. Check this first with git ls-tree on that branch, without checking it out. The four records of this Story then get the next four free numbers after the highest number on either branch, which I expect to be 0014 to 0017, with the same names after the number. If the check shows something else, tell me before you change anything.
+If the line above did not load the skill story-plan, load it now and follow it.
 
-- Change the four paths in allowed_paths of docs/work/ASKTD-77/scope.json accordingly, and nothing else in that file.
-- Add an entry to the intake part of the log that gives this reason.
-- Commit the two files by explicit path with ASKTD-77 in the subject, as the skill does for the intake commit.
-- Run python -B scripts/agent/check_scope.py ASKTD-77 --print-gate and show me the new gate line and the commit id. Stop there.
+Notes from the lead for this run:
+- I added the intake gate line to docs/work/ASKTD-77/log.md by hand. If that change is not committed yet, commit that one file with the subject "ASKTD-77: approve the intake gate" before anything else, and change no word in it.
+- Do the plan stage only, as the skill says, and stop at its gate.
+
+Answers to the open questions of the intake:
+- The application inventory of 23 Nov 2026 is not in this repository and is not added. Its summary is the paragraph "Input for decision record 1" of the Story. It described the head branch of the open Registry pull request (number 23), not the default branch. Check each statement against the code, and write "not confirmed" where this branch does not show it.
+- That head branch already holds decision records 0008 to 0013. Read them with git show, without checking the branch out. A new record does not repeat one of them and does not contradict one silently: where it builds on one or differs from one, it says so.
+- Decided by the lead on 27 Nov 2026. Write these as decisions, in the record each belongs to:
+  1. A central team maintains the Registry and is the only user of the Registry workspace. General users work only in the Chat.
+  2. The application creates no table. The table-creation scripts are kept in one folder of the repository, and applying them is separate work.
+  3. There is no special case for a Recipe that is defined in code: it is registered like any other Recipe, or it is not shown.
+  4. Metadata enters the Registry from the Excel export of Data Compass. A direct connection is not possible today and comes later.
+  5. The same export serves the import in SpruceX.
+- Everything else in the four records stays a draft: the options, a proposed decision, the consequences and what is not decided. The lead decides after the review.
+- The input and the review of the two AI engineers and of the data engineer are person items. They happen on the pull request. Name roles only, never a person.
+- The Stories that a record unblocks: read the section "Depends on" of ASKTD-82 to ASKTD-90 with get-story --print, and name every Story that waits for a decision record.
+- Sprint 2 starts on 7 Dec 2026. The merge before its planning is the person item of DW-1.
+- Format: follow the existing records in the folder.
+
+Before you stop, show me at most 14 lines: the files of the plan with their numbers; for each record its sources in the code and in the existing records of the Registry branch; the contradictions under "Context used"; the open questions that remain; the gate line to copy; and each place where the skill did not fit.
