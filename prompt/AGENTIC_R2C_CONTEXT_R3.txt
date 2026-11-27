@@ -1,7 +1,8 @@
-The working tree is not clean for two reasons, and both are known.
+One correction before I approve the intake gate.
 
-1. The modified tracked files are the previous step, R6, which is not committed yet. Its report docs/work/_bootstrap/14-size-and-patterns.md names every file that it changed. Stage exactly those files by explicit path (nothing from docs/work/_bootstrap/, and not local.json), commit with the subject "ASKTD-79: make the Story size a warning and name two patterns", and push. If a tracked file is modified that the report does not name, stop and tell me its path. Never use git add -A, git add . or git commit -a.
+The numbers 0008 to 0013 are taken: the head branch of the open Registry pull request (number 23) adds decision records with these numbers. Check this first with git ls-tree on that branch, without checking it out. The four records of this Story then get the next four free numbers after the highest number on either branch, which I expect to be 0014 to 0017, with the same names after the number. If the check shows something else, tell me before you change anything.
 
-2. The untracked files are working notes under docs/work/_bootstrap/. They are never committed. Add the line docs/work/_bootstrap/ to the local exclude file of this clone, .git/info/exclude, and change nothing else. Do not delete or move a note.
-
-Then run git status --short. When it prints nothing, run the intake for ASKTD-77 again with the notes of my first message, and end with the same 14 lines. When it still prints something, stop and show me those lines.
+- Change the four paths in allowed_paths of docs/work/ASKTD-77/scope.json accordingly, and nothing else in that file.
+- Add an entry to the intake part of the log that gives this reason.
+- Commit the two files by explicit path with ASKTD-77 in the subject, as the skill does for the intake commit.
+- Run python -B scripts/agent/check_scope.py ASKTD-77 --print-gate and show me the new gate line and the commit id. Stop there.
