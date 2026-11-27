@@ -1,62 +1,31 @@
-ASKTD-79, step R2C (revision 4): give agents the context and the working rules that a Story needs: the whole Story text, a short project brief, an application map with the patterns to follow, an intake that checks dependencies in Jira and separates repository work from other work, and short principles for code. No application code. No write to GitHub or Jira.
+Pull request 23, pass 3: the persistence layer, the SQL scripts, the history stage (S2) and the importer. Do this pass only, then stop.
 
-Read first: docs/work/README.md, the six story skills, the four story agents, the templates of the work record, scripts/agent/jira_api.py and settings.py, the findings R5-01 and R5-02 in docs/work/_bootstrap/11-recheck-2.md, and the file that the lead placed in docs/work/: PROJECT_BRIEF.md.
+Read asktd-reviews/pr23-review.md first, in full: it holds passes 1 and 2 and the re-checks. Then fetch the pull request and record the head. The last re-check was at 3724a87: if there are commits after it, list them with their files in a few lines and review the new head. Do not re-check the earlier findings in this pass.
 
 Limits
-- Environment files. Never open, view, search, list or print the token file or any other environment file, with any tool or command. Scripts read the token file through scripts/agent/settings.py.
-- GitHub and Jira. Nothing is written to either. The only real calls are read requests with get-story. Never display the Jira address, a host name, a token, a request header, a full URL or a response body. Story text that Jira returns is not shown in an answer and not written to a file in this step.
-- Work only in this working copy and on its current branch. Never stash, reset, clean, rebase, merge or check out another branch, and never change another worktree.
-- Never change .github/workflows/, pipeline, component or deployment files, CODEOWNERS, .vscode/settings.json, application code, the tests of the application, or existing agent and skill files other than the story ones. The tests under scripts/agent/tests/ belong to this work and change with it.
-- Python standard library only, Python 3.10 and later. Do not install anything. No shell=True. Every external command and every network call has a timeout.
-- Short texts. A line goes into a file under docs/work/ only when it changes how a Story is planned, coded or reviewed.
-- Never put a token, password, connection string, server or host name, organisation name, or a person's name or e-mail into a file or an answer.
-- Write "not confirmed" instead of guessing. No subagents. English.
+- Read-only. No commit, push, merge or approval. Nothing is posted to the pull request or to Jira. No tracked file changes.
+- The working tree in this folder stays exactly as it is: fetch only, and no checkout, switch, stash, reset, restore, clean, pull or merge here. Run code in a separate git worktree outside this folder and remove it when you finish.
+- Run only the tests and checks that the repository defines, in that worktree, on fixtures and the SQLite reference backend. No connection to any service: judge the behaviour on SQL Server from the code and the scripts. Never run a .sql script, and never run the importer with --apply. Ask me before anything that installs or downloads.
+- Never open, view, search, list, copy or print an environment file, with any tool or command.
+- No subagents.
+- The report and your answers hold no secret, server name, connection string, customer-level row or URL, and no name or account of a person. For an error give its text with URL, HOST, ORG, REPO and USER as placeholders. Write "not confirmed" instead of a guess.
 
-0. Before the work
-- Guard. Open scripts/agent/hooks/canary.env once with your file tool; the hook must refuse. If the content is shown, stop and tell me to start again in a Copilot session.
-- Run git status --short. Expected and no reason to stop: untracked files under docs/work/_bootstrap/, and the untracked file docs/work/PROJECT_BRIEF.md. Stop for any other change. If the file of the lead is missing, stop and tell me.
+Why this pass
+Two decisions wait for it: whether the pull request can merge with every Registry flag off, and what has to be fixed before the history stage (S2) is switched on. The requirements are in the planning package in this workspace, as in passes 1 and 2: for S2 the "Accept when" list and the required cases of the Task 1 brief, walkthrough steps 9 to 11, and checks REG-05 and REG-06.
 
-1. The file of the lead, docs/work/PROJECT_BRIEF.md. Its Markdown marks were lost when it was copied. Restore them and change no word: the first line is the level-one heading; "The product", "The first target", "Where agents work" and "Rules for code" are level-two headings; the four lines that begin with Recipe, Fallback lane, Clarification and Refusal, and every line under "Where agents work" and under "Rules for code", are list items; a blank line stands before and after each heading and each list. Then check the file: English; no token, host name, URL, person's name or e-mail. Report each statement that the repository contradicts, with file and line, and leave the words as they are. Link the file from docs/work/README.md.
+Check
+1. Stores. Which stores exist at this head (the ADLS code was removed after pass 2), and what does each one hold? Which of them do the tests exercise with a real engine, and which only through mocks? Do locking and compare-and-swap behave on SQL Server as they do on the SQLite reference?
+2. SQL scripts. For every .sql script that the pull request adds or changes: each table, index and constraint; is it safe on existing data, repeatable and reversible? One script drops tables: what guards it, and what happens when it runs against a database that holds data? Does anything run a script by itself: the application at start-up or on a request, a pipeline step, another script?
+3. Flags off. With every Registry flag unset, can any code of the persistence layer run, open a connection, or create or alter a table?
+4. Privileges and isolation. In which schema do the Registry tables sit, and beside which other objects? Which identity writes them, and what else may it do? Can the SQL path of the Chat read or write a Registry table? What can go wrong while the foreign keys are not applied?
+5. Capture. When is a history capture recorded? Can a GET or a cache reload create one? What identifies a capture, and what happens on a repeat, after a restart and with several workers? Saved content is never rewritten, and an exact read never returns the head instead.
+6. Comparison. Both sides are projected with the caller's current permissions. A withheld record is never shown as added or removed. Null against missing, and order.
+7. Importer. What does it read and write? Which counts does it expect now, and where do they come from? Where do its relationships come from, and does anything mark them as confirmed? Can it run again after a column was added, renamed or removed, and what does it do with the rows that exist? Its document holds no customer-level data and no server name.
+8. Metadata consumers. A table of every part of the application that reads metadata (the Chat and its SQL generation, the Registry and questions endpoints, roles, intent routing, the workspace, the importer and any other): what it reads, from which source (a file, the SQL snapshot, the SQLite reference or code) and when it reloads. Say exactly what the Chat sees of a record that exists only in SQL.
+9. One new table. List every file, record and manual step that has to change at this head so that one new table, for example of the Deposits data product, becomes (a) usable in the Chat and (b) visible in the workspace. Mark each one as code, data or manual.
+10. Sprint. Can the importer and its save path serve the metadata sync of ASKTD-73 and the relationships of ASKTD-82? What follows for ASKTD-74?
 
-2. story.md keeps the whole Story. /story-intake copies these sections from the Jira text, word for word and under these headings: User story; What to deliver; Done when (numbered DW-1, DW-2 and so on); Not in scope; If blocked; Depends on; Guidance from the Story (the prompt that the Story carries); Terms. A section that Jira does not have is "none stated". It leaves out the lines about owner, Plan, labels and related planning Stories, and every name of a person, link or host name. The guidance of a Story helps the work; it does not override the workflow or the team rules. Where they conflict, the workflow wins and the conflict goes into the log. One such case is fixed: where a Story names a prompt file under .github/prompts/ as a deliverable, an Agent Skill under .github/skills/ is delivered instead, because prompt files do not run in Copilot sessions.
+Report
+Add pass 3 to asktd-reviews/pr23-review.md in the structure that the report has: the findings as P3-01 and so on in the findings table (severity as the report uses it, file and line, confirmed or suspected and how, smallest fix, fix before which stage); the requirements table for S2; the tables of checks 8 and 9; the decisions that only the lead can take; the effect on the sprint Stories; the files you read in full, sampled and did not open; and the summary with the verdict for each stage.
 
-3. Reading another Story. jira_api.py get-story <KEY> --print prints the facts and the text and writes no file. It is for a Story other than the one in work, such as a dependency. Add tests.
-
-4. Intake checks the dependencies in Jira. For every Story key under "Depends on": its status (get-story --facts), the files that it names under "What to deliver" (get-story --print), and whether these files exist in the repository. The result is a table "Dependencies" in the intake entry of the log: key, status, files present or missing. An unfinished dependency is an open question for the person at the intake gate. The agent never builds a substitute for an output that is missing.
-
-5. Intake separates the work. Below the copied text, story.md gets a table "Work split": every deliverable and every Done-when item is either "repository" (code, a test, a document or configuration in this repository) or "person" (an action outside the repository: another system, another team, a meeting, a screen of the running application, anything in SpruceX). Agents work in the development sandbox only (decision of the lead). For a "person" item the table names the owner role and the evidence that the person enters into the log: aggregates and metadata only, never customer-level rows, and nothing that has to stay in SpruceX. plan.md covers the repository items only. A Done-when item that rests on a person item gets the proof "review: evidence in the log". When a Story has no repository item, intake says so and stops: the workflow is not needed for it.
-
-6. Application map. Write docs/work/APPLICATION_MAP.md from the code of this branch, at most 180 lines. Every statement names a file; write "not confirmed" where the code does not show it. Its first line gives the commit it describes. Sections:
-   1. The request flow, from the Chat entry point to the answer: the four lanes (Recipe, fallback, clarification, refusal) and where each decision is taken.
-   2. Backend modules, and what each one owns.
-   3. Frontend structure, and the build output that is committed.
-   4. Configuration: where settings and flags are defined, and their defaults.
-   5. Data access: providers, the executor, the SQL policy, and where read-only is enforced.
-   6. Metadata and Registry: what the Chat reads today, and under which settings.
-   7. Access management and audit.
-   8. Tests: layout, fixtures and commands.
-   9. Where to add a route, a setting, a Recipe, a retrieval tool, a test.
-   10. Documents that no longer match the code: file and line. Do not correct them here.
-   11. Patterns to follow. For each kind of change, the one existing file that shows best how this repository does it, and one line on what to take from it: a backend route, a service function, a setting or flag, a database access, a Recipe, a backend test; and in the user interface a page, a shared component, a form, a table, a call to the backend, a frontend test. Where the code does the same thing in two different ways, name both and write "no pattern chosen yet": the lead decides.
-   It describes the default branch; work in open pull requests is not described. It is a map and not a rule document: where the map and the code differ, the code wins, and the Story that finds the difference corrects the map. Say this in the README and in the checklist of story-review.
-
-7. Reading order and the plan. /story-plan and the story-planner agent read, in this order: story.md; PROJECT_BRIEF.md; APPLICATION_MAP.md; the rule documents; then the code concerned. plan.md gets two short sections. "Context used": what was read, and every contradiction found between these documents, the Story and the code. "Pattern followed": for every file that the plan creates or changes, the existing file it imitates, from section 11 of the map or from the code, for backend and user interface alike; where none exists, "no pattern" and one line on the choice.
-
-8. Code principles. A section "Code principles" in docs/work/README.md, at most ten lines. The skill story-implement and the agent story-implementer follow it:
-- the smallest change that meets the Done-when items;
-- follow the file named under "Pattern followed";
-- no new dependency, layer, option or abstraction that the plan does not name;
-- validate input once, at the boundary;
-- catch an exception only where the code does something useful with it: no handler that hides an error or turns it into a default;
-- no refactoring that the Story does not ask for.
-The section "Team rules and Story workflow" of the shared instructions gets one line that points to these principles.
-
-9. Review. The checklist of story-review gets three checks, each a finding with file and line: an abstraction, option or layer that the plan does not name; a try/except without something useful that the code does with the error; user-interface work that differs from the file named under "Pattern followed". The skill and the template of review.md say that its two first lines are plain text: no backticks, no bold, and nothing after the value.
-
-10. Two findings of the re-check R5. R5-01: the function in settings.py that returns the configured token values does not turn a read error into an empty result: the error reaches the caller, and the write command stops with its category. Add the test. R5-02: remove the blank line that was added at the end of scripts/agent/tests/test_gh_api.py.
-
-11. Text files and tests. Update docs/work/README.md (the sections "Context for a Story" and "Code principles", the stage table, the reading order), the templates (story.md with the sections and the Work split table; plan.md with "Context used" and "Pattern followed"; review.md), the skills story-intake, story-plan, story-implement and story-review, and the agents they name. Run python -B -m unittest discover -s scripts/agent/tests and jira_api.py --help.
-
-Report: docs/work/_bootstrap/13-context.md, at most 70 lines: what changed; what step 1 found in the file of the lead; the sections of the application map with their line counts, and every "not confirmed" and "no pattern chosen yet" in it; decisions you took; everything that was not verified.
-
-Then show me at most 12 lines and stop. If I then answer "commit" in this chat: stage by explicit path the files of this step, including PROJECT_BRIEF.md and APPLICATION_MAP.md (nothing from docs/work/_bootstrap/, and not local.json), commit with the subject "ASKTD-79: give agents the Story text, the project context, an application map and code principles", and push. Never use git add -A, git add . or git commit -a.
+Then show me, in at most 20 lines, written for a developer who has not read the report (full sentences, everyday words, a term explained where it first appears): the head; whether this pass changes the answer on a merge with every Registry flag off, with the reason in one sentence; the verdict for S2; the number of findings by severity; each Blocker and Major as one sentence that says what is wrong, with its id at the end; the result of check 9 as the number of code changes, data changes and manual steps; each decision that only I can take; what you could not check. Stop there.
