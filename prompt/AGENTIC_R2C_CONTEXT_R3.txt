@@ -1,46 +1,35 @@
-Pull request 23: my decisions on the open items of the comment draft. Turn them into exact tasks and a new draft. Do not start or continue pass 3 in this step.
+ASKTD-79, step R6: two decisions of the lead. The size of a Story no longer stops the work, and the application map names the pattern for settings and for database access. No application code. No call to GitHub or Jira.
 
-Read first, in full: asktd-reviews/pr23-review.md and asktd-reviews/pr23-comment-3724a87.md. The numbers below are the block numbers of that draft.
+Read first: scripts/agent/check_scope.py with its tests, docs/work/_template/scope.json, docs/work/README.md, the story skills that run the scope check, and section 11 of docs/work/APPLICATION_MAP.md.
 
 Limits
-- Read-only. No commit, push, merge or approval. Nothing is posted to the pull request or to Jira. No tracked file changes.
-- The working tree in this folder stays exactly as it is: fetch only, and no checkout, switch, stash, reset, restore, clean, pull or merge here. Run code in a separate git worktree outside this folder and remove it when you finish.
-- Run only the tests and checks that the repository defines, in that worktree, on fixtures and the SQLite reference backend. No connection to any service. Never run a .sql script or the importer with --apply. No install and no download.
-- Never open, view, search, list, copy or print an environment file, with any tool or command.
-- No subagents.
-- The report, the draft and your answers hold no secret, server name, connection string, customer-level row or URL, and no name or account of a person. Write "not confirmed" instead of a guess.
+- Environment files. Never open, view, search, list or print the token file or any other environment file, with any tool or command.
+- No network in this step. Tests run offline.
+- Work only in this working copy and on its current branch. Never stash, reset, clean, rebase, merge or check out another branch.
+- Never change .github/workflows/, pipeline, component or deployment files, CODEOWNERS, .vscode/settings.json, application code, the tests of the application, or existing agent and skill files other than the story ones. The tests under scripts/agent/tests/ belong to this work and change with it.
+- Python standard library only, Python 3.10 and later. Do not install anything.
+- Small and plain: the smallest change that does what this prompt says, and no change to code that it does not concern.
+- Never put a token, password, connection string, server or host name, organisation name, or a person's name or e-mail into a file or an answer.
+- Write "not confirmed" instead of guessing. No subagents. English.
 
-Two facts
-- A central team maintains the Registry and is the only user of the Registry workspace. General users work only in the Chat.
-- The frontend packages cannot be installed on this machine. The frontend is installed, tested and built in the development sandbox. This is not a defect of the repository.
+0. Before the work
+- Guard. Open scripts/agent/hooks/canary.env once with your file tool; the hook must refuse. If the content is shown, stop and tell me to start again in a Copilot session.
+- Run git status --short. Untracked files under docs/work/_bootstrap/ are expected. Stop for any other change.
 
-My decisions
-1 (P1-06): the author corrects the runtime guide and checks that the description of the pull request does not repeat the old sentence.
-2 (P1-09, P1-Q2): the author runs the AppShell tests and the production build in the development sandbox, after a clean install, at the final head, and shows that the committed build and coverage file come from that run. Tell me what happened to the login layout change that P1-09 also named.
-3 (P1-05) and 7 (P2-03): the application creates no table, and this pull request implements no table creation. The author puts the table-creation scripts into one folder of the repository; I register their automatic execution as a separate activity. This part waits for pass 3. The author also maps the Registry settings in the configuration loader, writes into the runtime guide where the signing secret comes from and what a change of it does, and makes start-up stop with a clear message when a Registry flag is on and its tables are missing. Setting the real secret is not a task of this pull request.
-4 (P1-07): not part of this pull request. Mock identity in a hosted environment will be switched off later, as a separate task.
-5 (P2-01) and 6 (P2-02): accepted as known limitations. No work.
-8 (P2-05): no special case for a Recipe that is defined in code. The existing Recipe will be registered like any other Recipe, in a separate Story. In this pull request the author only states that in the ADR. Tell me whether the special handling of source Recipes is used anywhere else, and what removing it would involve.
-9 (P2-07): nothing in this pull request. An import with an explicit binding for each environment, and an access check that uses that binding, come as separate Stories.
-10 (P2-08): the author derives field_catalog_state from the loaded records. The mapping states come in a separate Story.
-11 (P2-09), 12 (P2-10, all four gaps) and 13 (P1-04): the author.
-14 (P1-08): the author makes the server manifest registry the only list: the backend validates against it and the frontend takes the list from the server.
-15 (P1-01): you compare base and head with both metadata settings on (step 1). The effective values in the hosted environment are no longer a condition for the merge.
-16 (P1-Q1): a separate Story. It does not block.
-17 (P2-Q1): accepted without a check.
-Every task of the author above is done in this pull request, before the merge.
+1. Size is a warning, not a stop
+- check_scope.py: when the changed files or the changed lines of a Story are above max_changed_files or max_changed_lines of its scope.json, the run prints one line that begins with "WARNING: size" and gives both counts and both values. The result line and the exit code are the same as without it.
+- What still fails the run, unchanged: a changed path outside allowed_paths, a forbidden path, a protected path that scope.json does not name exactly, and a missing or outdated scope approval.
+- The two values in scope.json keep their names. They now mean the expected size of the Story. The template gets 30 files and 1000 lines.
+- Tests: a Story above either value passes and prints the warning; a path outside allowed_paths still fails. Change the older tests that expect a failure for size, and remove what no longer applies.
+- Text: docs/work/README.md and the story skills say that size is a warning. A stage that sees it copies the line into its log entry and goes on. The checklist of story-review gets one line: when the warning is present, the review says in one sentence whether the plan explains the size. A scope change, with its gate line, is needed for paths only.
 
-Steps
-1. At 3724a87, compare base and head with both metadata settings on, in the same way as with them off: payload hashes, SQL, the 22 fixtures. Report every difference with its cause.
-2. Answer the two questions of decisions 2 and 8.
-3. Rewrite asktd-reviews/pr23-comment-3724a87.md for these decisions, in the same block form and plain wording:
-- After the first line add "It includes the lead's decisions on the open items." Then "Can this merge with every Registry flag off? Not yet.", and who does what, one line each: the tasks of the author by their block numbers, the final re-check by the review, and what is left for the lead.
-- "Tasks for the author, before the merge": one block for each task. Add to each block the files and functions that change, the tests to add, and a line "Size:" (small, medium or large, with the number of files, and whether the change touches code that runs with every Registry flag off).
-- A suggested order for these tasks, so that the frontend is built and its tests run once, at the end, and the checks that prove no change with all flags off are repeated once.
-- "Accepted limitations": one line each, with my reason.
-- "Moved out of this pull request": one line each, with what it waits for.
-- "Fixed": as it is.
-- If the report already holds pass 3, leave its findings out of this draft: they get their own comment.
-4. Record my decisions in the report.
+2. Two patterns in the application map. In section 11 of docs/work/APPLICATION_MAP.md, three rows say "no pattern chosen yet". Change them as follows and nothing else in the file:
+- Setting or flag: the typed settings module is the pattern. A new setting or flag is defined there, with its mapping in the loader, and no new code reads a flag directly. The files that read a flag directly today are named as existing exceptions that are not imitated.
+- Database access: each lane keeps its own way. Work in the Recipe path follows the provider store; work in the fallback path follows the executor tool. New work imitates the lane it belongs to.
+- Recipe: stays "no pattern chosen yet", followed by: the decision record on the structure of a Recipe (ASKTD-77) decides.
 
-Then show me, in at most 20 lines: the result of step 1; the two answers; a table of the author's tasks with their size and "touches flags-off code: yes or no"; and anything in my decisions that the code contradicts, that is larger than it looks or that needs another decision from me, each with its options. Stop there.
+3. Run python -B -m unittest discover -s scripts/agent/tests and python scripts/agent/check_scope.py --help.
+
+Report: docs/work/_bootstrap/14-size-and-patterns.md, at most 30 lines: each change with file and line; the tests that changed, were added or were removed; decisions you took; everything that was not verified.
+
+Then show me at most 8 lines and stop. If I then answer "commit" in this chat: stage by explicit path the files of this step (nothing from docs/work/_bootstrap/, and not local.json), commit with the subject "ASKTD-79: make the Story size a warning and name two patterns", and push. Never use git add -A, git add . or git commit -a.
