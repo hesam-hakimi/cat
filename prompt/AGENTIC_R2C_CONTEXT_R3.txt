@@ -1,8 +1,7 @@
-/story-intake ASKTD-77
+The working tree is not clean for two reasons, and both are known.
 
-If the line above did not load the skill story-intake, load it now and follow it.
+1. The modified tracked files are the previous step, R6, which is not committed yet. Its report docs/work/_bootstrap/14-size-and-patterns.md names every file that it changed. Stage exactly those files by explicit path (nothing from docs/work/_bootstrap/, and not local.json), commit with the subject "ASKTD-79: make the Story size a warning and name two patterns", and push. If a tracked file is modified that the report does not name, stop and tell me its path. Never use git add -A, git add . or git commit -a.
 
-Notes from the lead for this run:
-- This is the first Story that goes through the workflow, and the workflow is not on the default branch yet. So the Story branch starts from the current branch, and base_branch in scope.json is the current branch, not the default branch. Say so in the intake entry of the log.
-- Do the intake stage only, as the skill says, and stop at its gate.
-- Before you stop, show me at most 14 lines: the branch you created and the branch it started from; base_branch, allowed_paths and the two expected-size values of scope.json; the Dependencies table; the Work split in short; every open question for me; the gate line to copy; what was written to Jira; and each place where the skill did not fit this situation.
+2. The untracked files are working notes under docs/work/_bootstrap/. They are never committed. Add the line docs/work/_bootstrap/ to the local exclude file of this clone, .git/info/exclude, and change nothing else. Do not delete or move a note.
+
+Then run git status --short. When it prints nothing, run the intake for ASKTD-77 again with the notes of my first message, and end with the same 14 lines. When it still prints something, stop and show me those lines.
