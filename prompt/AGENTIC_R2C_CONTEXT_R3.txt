@@ -1,21 +1,3 @@
-Pull request 23: my answers to your four points, and two more decisions. Apply them to the draft. The limits of my last message apply. No new review work except step 1.
+The guard's refusal of the canary file is the expected result of the canary check: it proves that the guard is active in this session. Only a canary whose content is shown is a reason to stop. This is a Copilot session.
 
-My decisions
-1. The check before a static Recipe runs (P2-09) is dropped: no task and no Story. The recipes that are defined in code are legacy from the demo and will be retired.
-2. Access to the Registry workspace goes through one configured group. Only its members can open the workspace and call its API, to view and to edit. Everyone else gets the same uniform 404, and the Registry entry is not shown to them. The separate groups for authoring, approval and publication stay as they are. The author adds this in this pull request.
-3. SQLite is not allowed: the architecture defines SQL Server only. The author removes SQLite from the code in this pull request and moves everything that used it, tests included, to SQL Server.
-4. Denied access: the uniform 404 stays. The screen shows one message, "Unavailable or not permitted."
-5. The special handling that turns recipes defined in code into catalogue records is removed in this pull request, with its two tests. The ADR says: the catalogue shows only Recipes that are registered in the Registry; recipes defined in code are not shown and will be retired.
-6. The SQL scripts stay in one folder of this repository for now, so that they are not lost, and they serve the development sandbox only. Later they move to a repository of their own.
-
-Steps
-1. For decisions 2, 3 and 5, read the code and say exactly what changes: files and functions, tests, and size. For decision 3 also say where SQLite is used today (code that can run in a deployed application, tests, fixtures; added by this pull request or already on the base), where the tests can run after the move (the development sandbox, CI or both), and how the final re-check can still prove that nothing changes with every Registry flag off, since it ran on SQLite until now.
-2. Rewrite asktd-reviews/pr23-comment-3724a87.md:
-- The team never saw the earlier drafts, so remove every block number. Number the tasks of the author from 1 and refer to them by these numbers. Give each accepted limitation and each item that moved out a plain title.
-- Remove the task for P2-09 and add the tasks of decisions 2, 3 and 5. Update the task of the Registry screen for decision 4, the task of the settings and scripts for decision 6, and the suggested order.
-- The reason for the two accepted limitations, on the Registry version and on page tokens, is now: only the members of the Registry group can open the workspace.
-- Name only roles that exist in the team: the author, the lead and the code owners.
-- After the first two lines keep "Can this merge with every Registry flag off? Not yet." and the list of who does what.
-3. Record the decisions in the report.
-
-Then show me, in at most 20 lines: the answers of step 1; the new table of the author's tasks with their size and "touches flags-off code: yes or no"; and anything that the code contradicts, that is larger than it looks or that needs another decision from me, each with its options. Stop there.
+Continue /story-implement ASKTD-77 from that point, with the notes of my first message. In your summary at the end, add one line that quotes the sentence of the skill that made you stop.
