@@ -1,19 +1,13 @@
-Pull request 23: three more decisions on your last answer. Apply them to the draft and the report. The limits of my last message apply. No new review work except step 1.
+Pull request 23: rewrite the comment draft asktd-reviews/pr23-comment-3724a87.md once more. The limits of my last message apply. No review work, and do not post it.
 
-My decisions
-1. SQLite is removed in two steps. In this pull request the author removes SQLite only from the four Registry stores that this pull request adds (history, Metric, Recipe, workflow) and makes SQL Server their only backend, after moving the shared code out of the SQLite classes. SQLite elsewhere in the application stays for now and is removed by a separate Story. The SQLite paths of the base therefore do not change, and the all-flags-off comparison with the base stays a condition for the merge.
-2. Tests of the four stores: fake connection tests run in CI and in the development sandbox. Real SQL Server tests run in the development sandbox, on the dbo schema for now; a separate test database or schema comes in a later Story. Every real test runs inside a transaction that it rolls back, or deletes only the rows that it created. No test drops a table, runs a table-creation or table-dropping script, or touches a table outside the Registry. The real tests expect the Registry tables to exist and stop with a clear message when they do not. The author posts their result together with the frontend evidence.
-3. The work is split in two pull requests:
-- Before the merge: the removal of SQLite from the four stores; the settings, the scripts folder and the start-up table check; the runtime guide and the description; the final frontend tests, coverage and build in the sandbox, together with the real SQL Server tests. Then pass 3 of the review at that head, then the final all-flags-off re-check, then the merge.
-- A second pull request, right after the merge and before the catalogue (S1) is switched on: the Registry group; the removal of the source-Recipe projection with the ADR changes; field_catalog_state from the loaded records; the four Registry screen behaviours; the CORS change; the Builder list from the server only. It gets its own frontend evidence and re-check.
+The comment is posted from my account, so write it in my voice: I am the lead and I speak in the first person ("I re-checked", "I decided", "I accept"). It is addressed to the author and is about what the author has to do. It should be clearly shorter than now.
 
-Steps
-1. Read the code again for decision 1 only: the files and functions that change, the shared code that has to move, the tests that change, and the new size. Say whether code that runs with every Registry flag off uses any of the four stores.
-2. Rewrite asktd-reviews/pr23-comment-3724a87.md for these decisions:
-- Keep the first two lines and "Can this merge with every Registry flag off? Not yet.", then who does what, one line each.
-- "Before the merge": the four tasks, numbered from 1 in the order in which the author does them. Put the rules of decision 2 into the task of the frontend evidence and the real tests.
-- "Second pull request, before the catalogue is switched on": the six tasks, numbered on from the first list, each with what changes, its tests and Done when, shorter than the tasks before the merge.
-- "Accepted limitations", "Moved out of this pull request" and "Fixed" stay. Add to the items that moved out: SQLite elsewhere in the application, and a separate test database or schema.
-3. Record the decisions in the report.
+Change this:
+1. The opening. Replace everything above the first task with three or four sentences in my voice, for example: "I re-checked this pull request at 3724a87 and went through every open item. It cannot merge yet, even with every Registry flag off. Please do tasks 1 to 4 below in this pull request. Tasks 5 to 10 go into a second pull request right after the merge, before the catalogue (S1) is switched on. This comment replaces my earlier one at 1b4713a."
+2. The tasks. Keep the two lists, and number the tasks in the order in which the author does them. Each task has a title that says what to do, then only these lines: "What to do", "Tests", "Done when", and "Where" with "Ref:". Add a one-sentence "Why" only where the reason is not obvious from the title. Remove "Now", "Size" and "for the author". Keep every fact that the author needs and nothing that only I need.
+3. After the first list, one short paragraph in my voice: when tasks 1 to 4 are done, I review the storage layer, the SQL scripts and the import script at that head and repeat the all-flags-off comparison with main; the Security and Data Governance code owners approve; then I merge. After the second list, one sentence: the second pull request gets the same frontend evidence and my re-check before S1 is switched on.
+4. Remove the section "Suggested order": the numbering carries the order.
+5. Put "What I accepted", "What moved out of this pull request" and "Fixed since my last comment" at the end, each in a collapsed <details> block, one line for each item, in my voice.
+6. Nowhere "the lead", "run for the lead" or "Pass 3". No greeting, no @mention and no personal name.
 
-Then show me, in at most 15 lines: the answer of step 1; the two task lists with their size and "touches flags-off code: yes or no"; and anything that the code contradicts or that needs another decision from me, each with its options. Stop there.
+Then show me the comment from its first line to the end of task 4, and the titles of tasks 5 to 10. Stop there.
