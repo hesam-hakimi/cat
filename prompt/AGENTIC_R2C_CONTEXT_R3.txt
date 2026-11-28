@@ -1,15 +1,21 @@
+Pull request 23: my answers to your four points, and two more decisions. Apply them to the draft. The limits of my last message apply. No new review work except step 1.
 
- · TXT
-/story-implement ASKTD-77
- 
-If the line above did not load the skill story-implement, load it now and follow it.
- 
-Notes from the lead for this run. Write them into the first log entry of this stage, so that the review sees them.
-- Do the implement stage only, as the skill says, and stop at its gate.
-- The readers are the two AI engineers, the data engineer and the lead. Keep each record short: say each thing once, and name a file or a type instead of describing its code.
-- In a Decision section every statement begins with one of two labels: "Decided by the lead, 2026-11-27:" or "Proposed:".
-- A record gives the read commit of the Registry pull request once, in full, in its Context, and says that every later mention of that pull request means that commit. Later citations do not repeat the hash. This is how the lead reads the rule of the plan on naming the read commit.
-- Record 0015 says in plain words, in its Context, what the 27 recipes in the code are, what the one approved Recipe is, and where each comes from. A reader who believes that the team has built no Recipe yet must understand this from the record alone.
-- A record names roles only, never a person, also in its owner field.
- 
-Before you stop, show me at most 14 lines: the five files with their line counts; for each record the number of statements decided and proposed in its Decision section and the number of items under What Is Not Decided; the results of the checks, and the size warning if one was printed; the commits; the gate line to copy; and each place where the skill or the plan did not fit.
+My decisions
+1. The check before a static Recipe runs (P2-09) is dropped: no task and no Story. The recipes that are defined in code are legacy from the demo and will be retired.
+2. Access to the Registry workspace goes through one configured group. Only its members can open the workspace and call its API, to view and to edit. Everyone else gets the same uniform 404, and the Registry entry is not shown to them. The separate groups for authoring, approval and publication stay as they are. The author adds this in this pull request.
+3. SQLite is not allowed: the architecture defines SQL Server only. The author removes SQLite from the code in this pull request and moves everything that used it, tests included, to SQL Server.
+4. Denied access: the uniform 404 stays. The screen shows one message, "Unavailable or not permitted."
+5. The special handling that turns recipes defined in code into catalogue records is removed in this pull request, with its two tests. The ADR says: the catalogue shows only Recipes that are registered in the Registry; recipes defined in code are not shown and will be retired.
+6. The SQL scripts stay in one folder of this repository for now, so that they are not lost, and they serve the development sandbox only. Later they move to a repository of their own.
+
+Steps
+1. For decisions 2, 3 and 5, read the code and say exactly what changes: files and functions, tests, and size. For decision 3 also say where SQLite is used today (code that can run in a deployed application, tests, fixtures; added by this pull request or already on the base), where the tests can run after the move (the development sandbox, CI or both), and how the final re-check can still prove that nothing changes with every Registry flag off, since it ran on SQLite until now.
+2. Rewrite asktd-reviews/pr23-comment-3724a87.md:
+- The team never saw the earlier drafts, so remove every block number. Number the tasks of the author from 1 and refer to them by these numbers. Give each accepted limitation and each item that moved out a plain title.
+- Remove the task for P2-09 and add the tasks of decisions 2, 3 and 5. Update the task of the Registry screen for decision 4, the task of the settings and scripts for decision 6, and the suggested order.
+- The reason for the two accepted limitations, on the Registry version and on page tokens, is now: only the members of the Registry group can open the workspace.
+- Name only roles that exist in the team: the author, the lead and the code owners.
+- After the first two lines keep "Can this merge with every Registry flag off? Not yet." and the list of who does what.
+3. Record the decisions in the report.
+
+Then show me, in at most 20 lines: the answers of step 1; the new table of the author's tasks with their size and "touches flags-off code: yes or no"; and anything that the code contradicts, that is larger than it looks or that needs another decision from me, each with its options. Stop there.
