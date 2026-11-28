@@ -1,3 +1,19 @@
-The guard's refusal of the canary file is the expected result of the canary check: it proves that the guard is active in this session. Only a canary whose content is shown is a reason to stop. This is a Copilot session.
+Pull request 23: three more decisions on your last answer. Apply them to the draft and the report. The limits of my last message apply. No new review work except step 1.
 
-Continue /story-implement ASKTD-77 from that point, with the notes of my first message. In your summary at the end, add one line that quotes the sentence of the skill that made you stop.
+My decisions
+1. SQLite is removed in two steps. In this pull request the author removes SQLite only from the four Registry stores that this pull request adds (history, Metric, Recipe, workflow) and makes SQL Server their only backend, after moving the shared code out of the SQLite classes. SQLite elsewhere in the application stays for now and is removed by a separate Story. The SQLite paths of the base therefore do not change, and the all-flags-off comparison with the base stays a condition for the merge.
+2. Tests of the four stores: fake connection tests run in CI and in the development sandbox. Real SQL Server tests run in the development sandbox, on the dbo schema for now; a separate test database or schema comes in a later Story. Every real test runs inside a transaction that it rolls back, or deletes only the rows that it created. No test drops a table, runs a table-creation or table-dropping script, or touches a table outside the Registry. The real tests expect the Registry tables to exist and stop with a clear message when they do not. The author posts their result together with the frontend evidence.
+3. The work is split in two pull requests:
+- Before the merge: the removal of SQLite from the four stores; the settings, the scripts folder and the start-up table check; the runtime guide and the description; the final frontend tests, coverage and build in the sandbox, together with the real SQL Server tests. Then pass 3 of the review at that head, then the final all-flags-off re-check, then the merge.
+- A second pull request, right after the merge and before the catalogue (S1) is switched on: the Registry group; the removal of the source-Recipe projection with the ADR changes; field_catalog_state from the loaded records; the four Registry screen behaviours; the CORS change; the Builder list from the server only. It gets its own frontend evidence and re-check.
+
+Steps
+1. Read the code again for decision 1 only: the files and functions that change, the shared code that has to move, the tests that change, and the new size. Say whether code that runs with every Registry flag off uses any of the four stores.
+2. Rewrite asktd-reviews/pr23-comment-3724a87.md for these decisions:
+- Keep the first two lines and "Can this merge with every Registry flag off? Not yet.", then who does what, one line each.
+- "Before the merge": the four tasks, numbered from 1 in the order in which the author does them. Put the rules of decision 2 into the task of the frontend evidence and the real tests.
+- "Second pull request, before the catalogue is switched on": the six tasks, numbered on from the first list, each with what changes, its tests and Done when, shorter than the tasks before the merge.
+- "Accepted limitations", "Moved out of this pull request" and "Fixed" stay. Add to the items that moved out: SQLite elsewhere in the application, and a separate test database or schema.
+3. Record the decisions in the report.
+
+Then show me, in at most 15 lines: the answer of step 1; the two task lists with their size and "touches flags-off code: yes or no"; and anything that the code contradicts or that needs another decision from me, each with its options. Stop there.
