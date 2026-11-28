@@ -1,13 +1,7 @@
-Pull request 23: rewrite the comment draft asktd-reviews/pr23-comment-3724a87.md once more. The limits of my last message apply. No review work, and do not post it.
+Pull request 23: three small corrections to asktd-reviews/pr23-comment-3724a87.md. The limits of my last message apply. Change nothing else, and do not post it.
 
-The comment is posted from my account, so write it in my voice: I am the lead and I speak in the first person ("I re-checked", "I decided", "I accept"). It is addressed to the author and is about what the author has to do. It should be clearly shorter than now.
+1. Task 1, "What to do": state the order. First move the shared row and serialization helpers and the inherited workflow project, apply, _project and event mapping out of the SQLite classes; then delete the four SQLite stores with their schemas, settings, exports and factory branches. Add one sentence: deleting first breaks the SQL Server stores. In "Done when", write "None of these four stores" instead of "No one of these four stores".
+2. Second pull request: number the tasks in the order in which the author does them. If the Builder list has to come before the Registry screen behaviours, as you said earlier, move it before them and renumber.
+3. "What I accepted", the line on the hosted metadata settings: add the reason, that the comparison with both metadata settings on showed the same Chat payloads, plans and SQL on main and on this pull request.
 
-Change this:
-1. The opening. Replace everything above the first task with three or four sentences in my voice, for example: "I re-checked this pull request at 3724a87 and went through every open item. It cannot merge yet, even with every Registry flag off. Please do tasks 1 to 4 below in this pull request. Tasks 5 to 10 go into a second pull request right after the merge, before the catalogue (S1) is switched on. This comment replaces my earlier one at 1b4713a."
-2. The tasks. Keep the two lists, and number the tasks in the order in which the author does them. Each task has a title that says what to do, then only these lines: "What to do", "Tests", "Done when", and "Where" with "Ref:". Add a one-sentence "Why" only where the reason is not obvious from the title. Remove "Now", "Size" and "for the author". Keep every fact that the author needs and nothing that only I need.
-3. After the first list, one short paragraph in my voice: when tasks 1 to 4 are done, I review the storage layer, the SQL scripts and the import script at that head and repeat the all-flags-off comparison with main; the Security and Data Governance code owners approve; then I merge. After the second list, one sentence: the second pull request gets the same frontend evidence and my re-check before S1 is switched on.
-4. Remove the section "Suggested order": the numbering carries the order.
-5. Put "What I accepted", "What moved out of this pull request" and "Fixed since my last comment" at the end, each in a collapsed <details> block, one line for each item, in my voice.
-6. Nowhere "the lead", "run for the lead" or "Pass 3". No greeting, no @mention and no personal name.
-
-Then show me the comment from its first line to the end of task 4, and the titles of tasks 5 to 10. Stop there.
+Then show me the changed lines only. Stop there.
