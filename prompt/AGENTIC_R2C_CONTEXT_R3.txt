@@ -1,20 +1,28 @@
-Source: ASKTD_STORIES_SUPPLEMENT_2026-11-28_R2.txt in this workspace. Record its hash in the ledger. It holds one changed delivery Story, S1-04 (ASKTD-73), and thirteen new ones: F-01 to F-10 and L-01 to L-03.
+Read the AskTD delivery Stories from Jira and draw their dependencies as one diagram. Read only: write nothing to Jira.
 
-Authorisation: as the lead, I authorise two things. First, updating the description, the importer-owned labels, the priority and the "Relates" links of ASKTD-73 from the source. Second, creating the thirteen new Stories with the same issue type as the 24 delivery Stories, each under the Epic of its Plan, with its marker, labels, priority and "Relates" links. Nothing else is authorised: no change to the description, fields or status of any planning record or of any other delivery Story, and no assignment, estimate, transition or sprint. The "Relates" links that this prompt names are allowed. Record this in the ledger with the date.
+Limits
+- Use the existing Jira connection of this workspace, with read requests only. Never display a token, the Jira address, a full URL, a request header or a response body, and never open, view or list an environment file.
+- No person's name in any file or answer. For the owner of a Story, use the role on its "Owner" line.
+- Python standard library only; no install and no download. Write every file into a new folder asktd-deps/ beside your import ledger, outside the planning package.
 
-Before any write
-- Check that ASKTD-73 still carries the marker asktd-delivery:S1-04, and tell me if a person changed its description since the last import.
-- Search for each new marker (asktd-delivery:F-01 and so on) and for each new title. Where an issue exists already, create nothing for it and tell me.
-- The new ids do not have the form of the earlier ones. Extend the importer for them in your own folder, not in the package.
-- A Story whose Plan line says "none" is placed in the same way as ASKTD-79.
-- Check that the new labels asktd-unscheduled and asktd-known-limitation match none of the four saved planning filters.
+1. Read every issue in project ASKTD with the label asktd-delivery: key, summary, status, priority, labels, the marker on the first line of the description, and the description. Leave out the issues with the label asktd-known-limitation and only count them.
 
-Rendering and priority: as for the 24 Stories. The marker stays the first line; numbered deliverables, bulleted lists, bold section labels and the Copilot prompt in a preformatted block; the wording does not change. The L Stories, and F-01 with its "Not now" section, have other sections than the rest: render the sections that each Story has. Must = High, Should = Medium, Stretch or Later = Low.
+2. Find the dependencies in the section "Depends on." of each description.
+- A delivery Story is named there by its id (S1-04, S2-10, F-03 and so on), often with its key. Map ids to keys through the markers.
+- A planning Story is named by its title and key.
+- Everything else in that section is an outside prerequisite, for example a merge, a file, a decision, a person or a team. Give each one a short name, and merge the ones that mean the same.
+- Where the section says that the work can start before a dependency is met, mark that dependency as soft.
+- Also use Jira links of a blocking type, if there are any. A "Relates" link is not a dependency.
 
-Use the importer with all its safeguards. First update ASKTD-73 and create F-03. Check the rendered HTML of both and show them to me. After my approval create the other twelve.
+3. Check for dependency cycles; for a Story in Sprint 1 or Sprint 2 that depends on a Story in a later column; and for Stories that depend on nothing, which can start now.
 
-After the last one
-- Create a "Relates" link from each new Story to each delivery Story that its "Depends on" line names, and from F-07 to each delivery Story that its checklist names.
-- In the new Stories and in ASKTD-73, add the Jira key in brackets after the first mention of each new id, in the way the existing Stories carry keys.
-- Rerun the four saved planning filters. Their counts must not change.
-- Report: each id with its Jira key, Epic and priority; every link created; any Story whose rendered text differs from the source; and anything that was refused, with its error category.
+4. Draw the diagram as one self-contained HTML file with an inline SVG, asktd-deps/dependency-map.html, with no script, no external file and no network.
+- Columns from left to right: outside prerequisites and planning Stories; Sprint 1; Sprint 2; after the January demo; not placed. Take the column from the labels asktd-sprint1-candidate, asktd-sprint2-candidate, asktd-later-candidate and asktd-unscheduled.
+- One box for each Story: key, id, a short title, owner role and status. Fill by status: to do grey, in progress blue, done green. A thick border for priority High.
+- An arrow from each prerequisite to the Story that needs it: solid for a hard dependency, dashed for a soft one, red for a timing conflict of step 3.
+- In each column, put prerequisites above the Stories that need them, and keep crossing arrows to a minimum. Add a legend. The text must be readable on a normal screen without zooming.
+Also write asktd-deps/dependencies.md: one table row for each dependency (from, to, hard or soft, conflict yes or no), then the Mermaid source of the same graph.
+
+5. Open the HTML file in the default browser.
+
+Then show me, in at most 15 lines: the number of Stories read and left out; the number of dependencies; the Stories that can start now; each outside prerequisite with the number of Stories that wait for it; each timing conflict and each cycle in one line. Stop there.
